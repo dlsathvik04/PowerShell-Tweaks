@@ -16,6 +16,8 @@ function sha256 { Get-FileHash -Algorithm SHA256 $args }
 # Quick shortcut to start notepad
 function n { notepad $args }
 
+function exp { explorer.exe . }
+
 # Drive shortcuts
 function HKLM: { Set-Location HKLM: }
 function HKCU: { Set-Location HKCU: }
@@ -103,33 +105,14 @@ function Edit-Profile {
 Remove-Variable identity
 Remove-Variable principal
 
-Function Test-CommandExists {
-    Param ($command)
-    $oldPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'SilentlyContinue'
-    try { if (Get-Command $command) { RETURN $true } }
-    Catch { Write-Host "$command does not exist"; RETURN $false }
-    Finally { $ErrorActionPreference = $oldPreference }
-} 
-#
-# Aliases
-#
-# If your favorite editor is not here, add an elseif and ensure that the directory it is installed in exists in your $env:Path
-#
-if (Test-CommandExists nvim) {
-    $EDITOR = 'nvim'
-}
-elseif (Test-CommandExists code) {
-    $EDITOR = 'code'
-}
-elseif (Test-CommandExists notepad) {
-    $EDITOR = 'notepad'
-}
 
-Set-Alias -Name vim -Value $EDITOR
 
+Set-Alias -Name vim -Value nvim
+Set-Alias -Name gedit -Value notepad
 
 function ll { Get-ChildItem -Path $pwd -File }
+
+# git shortcuts
 function g { Set-Location $HOME\Documents\Github }
 function gcom {
     git add .
@@ -140,6 +123,8 @@ function lazyg {
     git commit -m "$args"
     git push
 }
+
+
 function Get-PubIP {
     (Invoke-WebRequest http://ifconfig.me/ip ).Content
 }
@@ -165,9 +150,7 @@ function grep($regex, $dir) {
     }
     $input | select-string $regex
 }
-function touch($file) {
-    "" | Out-File $file -Encoding ASCII
-}
+
 function df {
     get-volume
 }
@@ -180,10 +163,39 @@ function which($name) {
 function export($name, $value) {
     set-item -force -path "env:$name" -value $value;
 }
-function pkill($name) {
-    Get-Process $name -ErrorAction SilentlyContinue | Stop-Process
-}
-function pgrep($name) {
-    Get-Process $name
+
+
+function export-global($name, $value) {
+    if ($isAdmin) {
+        [Environment]::SetEnvironmentVariable($name, $value, 'Machine')
+    }
+    else {
+        [Environment]::SetEnvironmentVariable($name, $value, 'User')
+    }
 }
 
+
+Set-Alias -Name pkill -Value Stop-Process
+Set-Alias -Name touch -Value New-Item
+
+function pgrep($name, $id, $search, $port) {
+    if ($id) {
+        Get-Process -Id $id 
+    }
+    elseif ($search) {
+        Get-Process *$search*
+    }
+    elseif ($port) {
+        Get-NetTCPConnection -LocalPort $port | Get-Process -Id { $_.OwningProcess }
+    }
+    else {
+        Get-Process $name 
+    }
+}
+
+function source($dir) {
+    $Env:Path += ";$dir"
+}
+
+# Manage path here
+source E:/SSR/V4/SSR-backend/
