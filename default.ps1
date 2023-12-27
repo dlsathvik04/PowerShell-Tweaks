@@ -13,8 +13,6 @@ function md5 { Get-FileHash -Algorithm MD5 $args }
 function sha1 { Get-FileHash -Algorithm SHA1 $args }
 function sha256 { Get-FileHash -Algorithm SHA256 $args }
 
-# Quick shortcut to start notepad
-function n { notepad $args }
 
 function exp { explorer.exe . }
 
@@ -109,16 +107,17 @@ Remove-Variable principal
 
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name gedit -Value notepad
+Set-Alias -Name n -Value notepad
 
 function ll { Get-ChildItem -Path $pwd -File }
 
-# git shortcuts
-function g { Set-Location $HOME\Documents\Github }
+
 function gcom {
     git add .
     git commit -m "$args"
 }
-function lazyg {
+
+function gpush {
     git add .
     git commit -m "$args"
     git push
