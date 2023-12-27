@@ -5,6 +5,18 @@ A PowerShell customization repository built based on <a href = "https://github.c
 ![Alt text](image.png)
 ![Alt text](image-1.png)
 
+# Installation
+
+For default behavior copy the contents of `default.ps1` to your powershell profile.
+
+for opening your default profile in notepad execute the following command in PowerShell
+
+```
+notepad $profile
+```
+
+# Functionality and Reference
+
 ## Added Aliases
 
 gedit, n -> notepad
