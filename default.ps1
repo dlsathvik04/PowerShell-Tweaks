@@ -113,6 +113,15 @@ function reload-profile {
     & $PROFILE
 }
 
+function upgrade-profile {
+    Invoke-RestMethod https://github.com/dlsathvik04/PowerShell-Tweaks/raw/main/default.ps1 -OutFile $PROFILE
+    Invoke-Command { & "pwsh.exe"} -NoNewScope
+}
+
+function uninstall-profile {
+    rm $PROFILE
+}
+
 # We don't need these any more; they were just temporary variables to get to $isAdmin. 
 # Delete them to prevent cluttering up the user profile. 
 Remove-Variable identity
