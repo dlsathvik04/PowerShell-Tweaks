@@ -18,7 +18,7 @@ Set-ExecutionPolicy Remotesigned
 Now, to install the 'tweak':
 
 ```
-irm https://github.com/SatXCho/PowerShell-Tweaks/raw/main/install.ps1 | iex
+irm https://github.com/dlsathvik04/PowerShell-Tweaks/raw/main/install.ps1 | iex
 ```
 
 **Conda integration only works when conda is configured for powershell and is in path**
