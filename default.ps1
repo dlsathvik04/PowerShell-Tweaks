@@ -120,6 +120,7 @@ function upgrade-profile {
 
 function uninstall-profile {
     rm $PROFILE
+    Invoke-Command { & "pwsh.exe"} -NoNewScope
 }
 
 # We don't need these any more; they were just temporary variables to get to $isAdmin. 

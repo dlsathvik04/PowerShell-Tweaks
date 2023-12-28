@@ -78,3 +78,9 @@ function gpush {
     git push
 }
 ```
+
+## Uninstall the profile
+To switch back to the default powershell profile(clean) use the command in powershell:
+```
+uninstall-profile
+```
