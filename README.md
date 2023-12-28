@@ -7,21 +7,19 @@ A PowerShell customization repository built based on <a href = "https://github.c
 
 # Installation
 
-for opening your default profile in notepad execute the following command in PowerShell
+Make sure you have Powershell 7 or above installed already, if not, use the command:
+```
+winget install --id Microsoft.Powershell
+```
+Windows has it's powershell execution policy set to restricted which does not allow execution of powershell scripts. Use the command in an administrator Powershell
+```
+Set-ExecutionPolicy Remotesigned
+```
+Now, to install the 'tweak':
 
 ```
-notepad $profile
+irm https://github.com/SatXCho/PowerShell-Tweaks/raw/main/install.ps1 | iex
 ```
-
-If your profile does not exist create it using
-
-```
-New-Item -Path $profile -ItemType "file" -Force
-```
-
-For default behavior copy the contents of `default.ps1` to your powershell profile.
-
-**Works best on PowerShell 7+**
 
 **Conda integration only works when conda is configured for powershell and is in path**
 
@@ -79,4 +77,10 @@ function gpush {
     git commit -m "$args"
     git push
 }
+```
+
+## Uninstall the profile
+To switch back to the default powershell profile(clean) use the command in powershell:
+```
+uninstall-profile
 ```
