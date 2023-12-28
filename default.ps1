@@ -33,6 +33,15 @@ if (Test-Path "$env:USERPROFILE\Work Folders") {
 
 # (& "C:\Anaconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | Invoke-Expression
 
+Function Test-CommandExists {
+    Param ($command)
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'SilentlyContinue'
+    try { if (Get-Command $command) { RETURN $true } }
+    Catch { Write-Host "$command does not exist"; RETURN $false }
+    Finally { $ErrorActionPreference = $oldPreference }
+}
+
 function prompt { 
     if (Test-Path .git) {
         git branch | ForEach-Object {
@@ -42,8 +51,10 @@ function prompt {
         }
     }
     
-    Write-Host ($env:CONDA_PROMPT_MODIFIER.Trim()) -nonewline -foregroundcolor darkblue -BackgroundColor DarkYellow
-    
+    if (Test-CommandExists conda){
+	    Write-Host ($env:CONDA_PROMPT_MODIFIER.Trim()) -nonewline -foregroundcolor darkblue -BackgroundColor DarkYellow
+	}    
+
     if ($isAdmin) {
         Write-Host ("[" + (Get-Location) + "]") -nonewline -foregroundcolor black -BackgroundColor red 
         "# "
@@ -94,7 +105,7 @@ function Edit-Profile {
         $psISE.CurrentPowerShellTab.Files.Add($profile.CurrentUserAllHosts)
     }
     else {
-        vim $profile
+        notepad $profile
     }
 }
 
@@ -142,13 +153,8 @@ function unzip ($file) {
 function ix ($file) {
     curl.exe -F "f:1=@$file" ix.io
 }
-function grep($regex, $dir) {
-    if ( $dir ) {
-        Get-ChildItem $dir | select-string $regex
-        return
-    }
-    $input | select-string $regex
-}
+
+Set-Alias -Name grep -Value findstr
 
 function df {
     get-volume
@@ -188,7 +194,11 @@ function pgrep($name, $id, $search, $port) {
         Get-NetTCPConnection -LocalPort $port | Get-Process -Id { $_.OwningProcess }
     }
     else {
-        Get-Process $name 
+        if ($name){
+            Get-Process $name 
+        }else{
+            Get-Process
+        }
     }
 }
 

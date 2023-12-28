@@ -7,13 +7,17 @@ A PowerShell customization repository built based on <a href = "https://github.c
 
 # Installation
 
-For default behavior copy the contents of `default.ps1` to your powershell profile.
-
 for opening your default profile in notepad execute the following command in PowerShell
 
 ```
 notepad $profile
 ```
+
+For default behavior copy the contents of `default.ps1` to your powershell profile.
+
+**Works best on PowerShell 7+**
+
+**Conda integration only works when conda is configured for powershell and is in path**
 
 # Functionality and Reference
 
