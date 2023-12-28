@@ -1,4 +1,5 @@
 # PowerShell-Tweaks
+Make your PowerShell nearly as good as Linux terminal with even more flexibility and customization.
 
 A PowerShell customization repository built based on <a href = "https://github.com/ChrisTitusTech/powershell-profile/"> this </a> repo by ChrisTitusTech with simplicity and light-weight in mind.
 
