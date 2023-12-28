@@ -13,6 +13,12 @@ for opening your default profile in notepad execute the following command in Pow
 notepad $profile
 ```
 
+If your profile does not exist create it using
+
+```
+New-Item -Path $profile -ItemType "file" -Force
+```
+
 For default behavior copy the contents of `default.ps1` to your powershell profile.
 
 **Works best on PowerShell 7+**
