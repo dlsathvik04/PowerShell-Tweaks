@@ -1,8 +1,10 @@
+$version = "1.0.3"
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal $identity
 $isAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 Remove-Variable identity
 Remove-Variable principal
+
 
 # Conda Integration
 If (Test-Path "C:\ProgramData\miniconda3\Scripts\conda.exe") {
@@ -134,6 +136,12 @@ Set-Alias -Name su -Value admin
 Set-Alias -Name sudo -Value admin
 
 # Proflie Utils -------------------------------------------------------------------------------------------------------------
+# Retrieve profile version
+function profile-version{
+    Write-host "Powershell Tweaks Version " + $version
+    Write-host "Licenced under The UNLICENSE."
+    Write-host "This is free and unencumbered software released into the public domain."
+}
 # Make it easy to edit this profile once it's installed
 function Edit-Profile {
     if ($host.Name -match "ise") {
