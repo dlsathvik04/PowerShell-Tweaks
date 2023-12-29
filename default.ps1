@@ -224,5 +224,41 @@ function source($dir) {
     $Env:Path += ";$dir"
 }
 
+function run{
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $path,
+
+        [Parameter()]
+        [switch] $c,
+
+        [Parameter()]
+        [switch] $cpp,
+
+        [Parameter()]
+        [switch] $t
+    )
+
+    if ($c) {
+        gcc $path -o runc.exe
+        .\runc.exe
+
+    } elseif($cpp){
+        g++ $path -o runc.exe
+        .\runc.exe
+    }
+    else {
+        Write-Host "No Compiler specified"
+    }
+    if ($t){
+        rm .\runc.exe
+    }
+}
+
+function make{
+    mingw32-make
+}
+
 # Manage path here
 # source <Path>
