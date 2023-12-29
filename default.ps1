@@ -6,6 +6,42 @@ If (Test-Path "C:\ProgramData\miniconda3\Scripts\conda.exe") {
     (& "C:\ProgramData\miniconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ?{$_} | Invoke-Expression
 }
 
+Function Test-CommandExists {
+    Param ($command)
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'SilentlyContinue'
+    try { if (Get-Command $command) { RETURN $true } }
+    Catch { Write-Host "$command does not exist"; RETURN $false }
+    Finally { $ErrorActionPreference = $oldPreference }
+}
+
+
+if (Test-CommandExists nvim) {
+    $EDITORCL='nvim'
+} elseif (Test-CommandExists pvim) {
+    $EDITORCL='pvim'
+} elseif (Test-CommandExists vim) {
+    $EDITORCL='vim'
+} elseif (Test-CommandExists vi) {
+    $EDITORCL='vi'
+} 
+
+if (Test-CommandExists code) {
+    $EDITOR='code'
+} elseif (Test-CommandExists notepad) {
+    $EDITOR='notepad++'
+} elseif (Test-CommandExists notepad++) {
+    $EDITOR='sublime_text'
+} elseif (Test-CommandExists sublime_text) {
+    $EDITOR='notepad'
+}
+
+Set-Alias -Name vim -Value $EDITORCL
+Set-Alias -Name gedit -Value $EDITOR
+Set-Alias -Name n -Value notepad
+
+
+
 # If so and the current host is a command line, then change to red color 
 # as warning to user that they are operating in an elevated context
 # Useful shortcuts for traversing directories
@@ -36,15 +72,6 @@ if (Test-Path "$env:USERPROFILE\Work Folders") {
 # and appends [ADMIN] if appropriate for easy taskbar identification
 
 # (& "C:\Anaconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | Invoke-Expression
-
-Function Test-CommandExists {
-    Param ($command)
-    $oldPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'SilentlyContinue'
-    try { if (Get-Command $command) { RETURN $true } }
-    Catch { Write-Host "$command does not exist"; RETURN $false }
-    Finally { $ErrorActionPreference = $oldPreference }
-}
 
 function prompt { 
     if (Test-Path .git) {
@@ -109,7 +136,7 @@ function Edit-Profile {
         $psISE.CurrentPowerShellTab.Files.Add($profile.CurrentUserAllHosts)
     }
     else {
-        notepad $profile
+        gedit $profile
     }
 }
 
@@ -131,12 +158,6 @@ function uninstall-profile {
 # Delete them to prevent cluttering up the user profile. 
 Remove-Variable identity
 Remove-Variable principal
-
-
-
-Set-Alias -Name vim -Value nvim
-Set-Alias -Name gedit -Value notepad
-Set-Alias -Name n -Value notepad
 
 function ll { Get-ChildItem -Path $pwd -File }
 
@@ -220,6 +241,8 @@ function pgrep($name, $id, $search, $port) {
     }
 }
 
+
+
 function source($dir) {
     $Env:Path += ";$dir"
 }
@@ -259,6 +282,9 @@ function run{
 function make{
     mingw32-make
 }
+
+
+
 
 # Manage path here
 # source <Path>
