@@ -1,7 +1,10 @@
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal $identity
 $isAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+Remove-Variable identity
+Remove-Variable principal
 
+# Conda Integration
 If (Test-Path "C:\ProgramData\miniconda3\Scripts\conda.exe") {
     (& "C:\ProgramData\miniconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ?{$_} | Invoke-Expression
 }
@@ -16,6 +19,7 @@ Function Test-CommandExists {
 }
 
 
+# Editor Setup ---------------------------------------------------------------------------------
 if (Test-CommandExists nvim) {
     $EDITORCL='nvim'
 } elseif (Test-CommandExists pvim) {
@@ -45,21 +49,18 @@ Set-Alias -Name n -Value notepad
 
 
 
-# If so and the current host is a command line, then change to red color 
-# as warning to user that they are operating in an elevated context
-# Useful shortcuts for traversing directories
+# Useful shortcuts for traversing directories---------------------------------------------------------------------
 function cd... { Set-Location ..\.. }
 function cd.... { Set-Location ..\..\.. }
+function exp { explorer.exe . }
 
-# Compute file hashes - useful for checking successful downloads 
+# Compute file hashes - useful for checking successful downloads -------------------------------------------------
 function md5 { Get-FileHash -Algorithm MD5 $args }
 function sha1 { Get-FileHash -Algorithm SHA1 $args }
 function sha256 { Get-FileHash -Algorithm SHA256 $args }
 
 
-function exp { explorer.exe . }
-
-# Drive shortcuts
+# Drive shortcuts ------------------------------------------------------------------------------------------------
 function HKLM: { Set-Location HKLM: }
 function HKCU: { Set-Location HKCU: }
 function Env: { Set-Location Env: }
@@ -74,8 +75,7 @@ if (Test-Path "$env:USERPROFILE\Work Folders") {
 # whether user is elevated (root) or not. Window title shows current version of PowerShell
 # and appends [ADMIN] if appropriate for easy taskbar identification
 
-# (& "C:\Anaconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | Invoke-Expression
-
+# Setup Prompt Style ------------------------------------------------------------------------------------------------
 function prompt { 
     if (Test-Path .git) {
         git branch | ForEach-Object {
@@ -99,6 +99,7 @@ function prompt {
     }
 }
 
+# Setup Window title ------------------------------------------------------------------------------------------------
 $Host.UI.RawUI.WindowTitle = "PowerShell {0}" -f $PSVersionTable.PSVersion.ToString()
 if ($isAdmin) {
     $Host.UI.RawUI.WindowTitle += " [ADMIN]"
@@ -117,6 +118,8 @@ function dirs {
 # Simple function to start a new elevated process. If arguments are supplied then 
 # a single command is started with admin rights; if not then a new admin instance
 # of PowerShell is started.
+# Set UNIX-like aliases for the admin command, so sudo <command> will run the command
+# with elevated rights. 
 function admin {
     if ($args.Count -gt 0) {   
         $argList = "& '" + $args + "'"
@@ -127,12 +130,10 @@ function admin {
     }
 }
 
-# Set UNIX-like aliases for the admin command, so sudo <command> will run the command
-# with elevated rights. 
 Set-Alias -Name su -Value admin
 Set-Alias -Name sudo -Value admin
 
-
+# Proflie Utils -------------------------------------------------------------------------------------------------------------
 # Make it easy to edit this profile once it's installed
 function Edit-Profile {
     if ($host.Name -match "ise") {
@@ -148,6 +149,18 @@ function reload-profile {
 }
 
 function upgrade-profile {
+    $Message = "The upgrade overrrides the profile with the latest version in web. All the changes you made locally will be lost are you sure you want to continue?"
+    do {
+        Write-Host $Message -ForegroundColor Yellow
+        $response = Read-Host "Press 'Y' to continue or any other key to exit: "
+
+        if ($response -ne 'Y') {
+            Write-Host "Execution stopped." -ForegroundColor Red
+            return  # Exit the function if input is not 'Y'
+        }
+    } while ($response -ne 'Y')
+
+    Write-Host "Updating the profile..."
     Invoke-RestMethod https://github.com/dlsathvik04/PowerShell-Tweaks/raw/main/default.ps1 -OutFile $PROFILE
     Invoke-Command { & "pwsh.exe"} -NoNewScope
 }
@@ -159,8 +172,7 @@ function uninstall-profile {
 
 # We don't need these any more; they were just temporary variables to get to $isAdmin. 
 # Delete them to prevent cluttering up the user profile. 
-Remove-Variable identity
-Remove-Variable principal
+
 
 function ll { Get-ChildItem -Path $pwd -File }
 
@@ -250,6 +262,8 @@ function source($dir) {
     $Env:Path += ";$dir"
 }
 
+
+# C and Cpp Utils -----------------------------------------------------------------------------------------------------
 function run{
     [CmdletBinding()]
     param(
@@ -282,8 +296,8 @@ function run{
     }
 }
 
-function make{
-    mingw32-make
+if (Test-CommandExists mingw32-make){
+    Set-Alias -Name make -Value mingw32-make
 }
 
 
