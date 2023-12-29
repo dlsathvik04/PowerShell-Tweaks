@@ -36,7 +36,10 @@ if (Test-CommandExists code) {
     $EDITOR='notepad'
 }
 
-Set-Alias -Name vim -Value $EDITORCL
+if ($EDITORCL){
+    Set-Alias -Name vim -Value $EDITORCL
+}
+
 Set-Alias -Name gedit -Value $EDITOR
 Set-Alias -Name n -Value notepad
 
