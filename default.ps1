@@ -1,4 +1,4 @@
-$version = "1.0.3"
+$version = "1.0.4"
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal $identity
 $isAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -87,7 +87,7 @@ function prompt {
         }
     }
     
-    if (Test-Path "C:\ProgramData\miniconda3\Scripts\conda.exe"){
+    if (Test-CommandExists conda){
 	    Write-Host ($env:CONDA_PROMPT_MODIFIER.Trim()) -nonewline -foregroundcolor darkblue -BackgroundColor DarkYellow -ErrorAction SilentlyContinue
 	}    
 
