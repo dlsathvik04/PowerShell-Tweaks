@@ -85,7 +85,7 @@ function prompt {
         }
     }
     
-    if (Test-Path "C:\ProgramData\miniconda3\Scripts\conda.exe"){
+    if (Test-CommandExists){
 	    Write-Host ($env:CONDA_PROMPT_MODIFIER.Trim()) -nonewline -foregroundcolor darkblue -BackgroundColor DarkYellow -ErrorAction SilentlyContinue
 	}    
 
